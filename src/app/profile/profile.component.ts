@@ -23,7 +23,6 @@ export class ProfileComponent implements OnInit {
 
       this.profileService.getUsersList().subscribe(users => {
         this.users = users;
-        console.log(users);
       });
   }
   findProfile() {
@@ -37,7 +36,6 @@ export class ProfileComponent implements OnInit {
     }
 
     findProfileOnClick(login) {
-      console.log(login);
       this.profileService.updateProfile(login);
       this.profileService.getProfileInfo().subscribe(profile => {
         this.profile = profile;
@@ -50,8 +48,6 @@ export class ProfileComponent implements OnInit {
         this.profileService.updateRepo(this.repoName);
         this.profileService.getRepoByName().subscribe(allRepos => {
             this.allRepos = allRepos;
-            //console.log(allRepos.items);
-            console.log(this.allRepos);
         });
     }
     edit(val) {
