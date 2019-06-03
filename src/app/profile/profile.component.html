@@ -1,0 +1,108 @@
+<form action="" class="search-form ">
+    <div class="form-group">
+        <input type="text" class="form-control" aria-label="Search" placeholder="Search git username"
+        [(ngModel)]="username" name ="username" (keyup)="findProfile()">
+    </div>
+</form>
+<div *ngIf="profile">
+    <div class="card">
+        <div class="card-header">
+            <strong>{{profile.name}}</strong>
+            (<small>{{profile.login}}</small>)
+            <span *ngIf="profile.company">, Works at{{profile.company}} </span>
+            {{profile.location}}
+        </div>
+        <div class="card-body row">
+            <div class="col-sm-3">
+                <img src="{{profile.avatar_url}}" class="rounded-circle img-fluid" alt="Profile Image">
+            </div>
+            <div class="col-sm-5">
+                <ul class="list-group">
+                    <li class="list-group-item" *ngIf="profile.bio">{{profile.bio}}</li>
+                    <li class="list-group-item" *ngIf="profile.blog">{{profile.blog}}</li>
+                    <li class="list-group-item" *ngIf="profile.public_repos">Public repos: {{profile.public_repos}}</li>
+                    <li class="list-group-item" *ngIf="profile.public_gists">Public gists: {{profile.public_gists}}</li>
+                </ul>
+            </div>
+            <div class="col-sm-4">
+                <p>
+                    <span *ngIf="profile.followers"> {{profile.name}} has{{profile.followers}} folowers, </span>
+                    <span *ngIf="profile.following">He is following {{profile.following}} users. </span>
+                </p>
+                <p><a target="_blank" href="{{profile.html_url}}" class="btn btn-success btn-sm"> Wiew profile on Github</a></p>
+            </div>
+        </div>
+        <div class="card-footer">
+
+            <form action="" class="search-form">
+                <div class="form-group has-search">
+                    <input type="text" class="form-control" type="text" name="search"
+                           [(ngModel)]="repoName" name="repoName" (keyup)="findRepo(profile.login)" autocomplete="off" placeholder="Start searching other public repos ">
+                </div>
+            </form>
+
+
+            <table class="table table-striped table-hover" *ngIf="!allRepos">
+                <thead>
+                    <tr>
+                        <th>Repo Name</th>
+                        <th>Description</th>
+                        <th>Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr  *ngFor="let repo of repos">
+                        <td *ngIf="repo.id === editRowId">
+                            <input type="text" [(ngModel)]="repo.name" (keyup)="saveToLocal(repo.id, repo.name)">
+                        </td>
+                        <td *ngIf="repo.id !== editRowId" (click)="edit(repo.id)">
+                            <span *ngIf="readLocal(repo.id) === null">{{repo.name}}</span>
+                            <span *ngIf="readLocal(repo.id) !== null">{{readLocal(repo.id)}}</span>
+                        </td>
+                        <td>{{repo.description}}</td>
+                        <td><a href="{{repo.html_url}}" class="btn btn-sm btn-warning"> View on Github</a></td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+            <table class="table table-striped table-hover" *ngIf="allRepos">
+                <thead>
+                <tr>
+                    <th>Repo Name</th>
+                    <th>Description</th>
+                    <th>Link</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr  *ngFor="let allRepo of allRepos">
+                    <td *ngIf="allRepo.id === editRowId">
+                        <input type="text" [(ngModel)]="allRepo.name" (keyup)="saveToLocal(allRepo.id, allRepo.name)">
+                    </td>
+                    <td *ngIf="allRepo.id !== editRowId" (click)="edit(allRepo.id)">
+                        <span *ngIf="readLocal(allRepo.id) === null">{{allRepo.name}}</span>
+                        <span *ngIf="readLocal(allRepo.id) !== null">{{readLocal(allRepo.id)}}</span>
+                    </td>
+                    <td>{{allRepo.description}}</td>
+                    <td><a href="{{allRepo.html_url}}" class="btn btn-sm btn-warning"> View on Github</a></td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="!profile">
+    <table class="table table-striped ">
+        <tbody>
+        <tr *ngFor="let user of users" (click)="findProfileOnClick(user.login)" class="table_for_user_list">
+            <td  class="text-center"><img src="{{user.avatar_url}}" class="rounded-circle img-fluid" width="50" height="50" alt="Avatar"></td>
+            <td><p  class="text-center"><strong>{{user.login}}</strong></p></td>
+            <td><a target="_blank" href="{{user.html_url}}" class="btn btn-sm btn-warning">View on Github</a></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
